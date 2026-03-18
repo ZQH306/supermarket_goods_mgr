@@ -50,6 +50,41 @@ switch (menu()){
             
         }break;
 
-		case 2: printf("2.显示库存信息\n");break;
+		case 2: printf("2.显示库存信息\n");
+        {
+            FILE *fp; //指向文件的指针
+            fp = fopen("inventory.txt", "r");
+            if (fp == NULL) {
+                printf("无法打开文件！\n");
+                return 0;
+            }
+            
+            int count = 0;
+            // 打印表头
+            printf("================================================================================\n");
+            printf("%-12s %-8s %10s %10s %10s\n", "品名", "编号", "进价", "售价", "库存");
+            printf("================================================================================\n");
+            
+            while (count < NUM && 
+                   fscanf(fp, "%s %s %f %f %d\n", 
+                          goods[count].brand, 
+                          goods[count].id, 
+                          &goods[count].in_price, 
+                          &goods[count].out_price, 
+                          &goods[count].storage) == 5) {
+                // 使用固定宽度格式化输出，确保对齐
+                printf("%-12s %-8s %8.2f %8.2f %8d\n", 
+                       goods[count].brand,      // 左对齐，宽度 12
+                       goods[count].id,         // 左对齐，宽度 8
+                       goods[count].in_price,   // 右对齐，宽度 8，保留 2 位小数
+                       goods[count].out_price,  // 右对齐，宽度 8，保留 2 位小数
+                       goods[count].storage);   // 右对齐，宽度 8
+                count++;
+            }
+            printf("================================================================================\n");
+            fclose(fp);
+        }break;
 	}
 }
+
+
