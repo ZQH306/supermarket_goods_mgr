@@ -1,24 +1,18 @@
 #include <stdio.h>
 #include "menu.h"
 #include "inventory.h"
+#include "shop_cart.h"
 
 #define NUM 5
 
-struct inventory
-{
-    char brand[20]; //商品名称
-    char id[20];    //商品编号
-    float in_price; //进价
-    float out_price;//售价
-    int storage;    //库存
-};
-
-struct inventory goods[NUM];   //商品结构体数组，该数组可以存储NUM个商品结构体
+struct inventory goods[NUM];   //商品结构体数组，该数组可以存储 NUM 个商品结构体
+struct cart_item shopping_cart[NUM]; //购物车数组
+int cart_count = 0;  //购物车中商品品种数
 
 int inventory()
 { 
-switch (menu()){
-		case 1: printf("1.建立库存信息\n");
+    switch (menu()){
+        case 1: printf("1.建立库存信息\n");
         {
             FILE *fp; //文件指针
             fp = fopen("inventory.txt", "w");//打开文件
@@ -27,7 +21,7 @@ switch (menu()){
                 return 0;
             }
             
-            for (int i = 0; i < NUM; i++) //循环输入NUM个商品信息
+            for (int i = 0; i < NUM; i++) //循环输入 NUM 个商品信息
             {
                 printf("请输入第%d个商品信息:\n", i + 1);
                 printf("请输入商品名称：");
@@ -50,7 +44,7 @@ switch (menu()){
             
         }break;
 
-		case 2: printf("2.显示库存信息\n");
+        case 2: printf("2.显示库存信息\n");
         {
             FILE *fp; //指向文件的指针
             fp = fopen("inventory.txt", "r");
@@ -84,7 +78,23 @@ switch (menu()){
             printf("================================================================================\n");
             fclose(fp);
         }break;
-	}
+        
+        case 3: printf("3.购物车\n");
+        {
+            handle_shop_cart();
+        }break;
+        
+        case 4: printf("4.结算\n");
+        {
+            show_shopping_cart();
+            printf("结算功能待实现...\n");
+        }break;
+        
+        case 5: printf("5.退出\n");
+        {
+            printf("感谢使用，再见！\n");
+        }break;
+    }
+    
+    return 0;
 }
-
-
