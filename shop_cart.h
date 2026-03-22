@@ -13,4 +13,8 @@ void remove_from_cart();
 void show_shopping_cart();
 void handle_shop_cart();
 
+// 新增：购物车持久化函数
+void save_cart_to_file();
+void load_cart_from_file();
+
 #endif

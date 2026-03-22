@@ -101,6 +101,9 @@ void add_to_cart() {
                 shopping_cart[cart_count].quantity = quantity;
                 cart_count++;
                 printf("商品已成功添加到购物车！\n");
+                
+                // 保存购物车到文件
+                save_cart_to_file();
             }
             break;
         }
@@ -149,6 +152,9 @@ void remove_from_cart() {
     cart_count--;
     
     printf("商品已从购物车删除！\n");
+    
+    // 保存购物车到文件
+    save_cart_to_file();
 }
 
 /**
@@ -192,6 +198,9 @@ void show_shopping_cart() {
 void handle_shop_cart() {
     int select;
     
+    // 进入购物车菜单时先加载购物车数据
+    load_cart_from_file();
+    
     while (1) {
         select = shop_cart_menu();
         
@@ -216,4 +225,70 @@ void handle_shop_cart() {
         getchar();  // 消耗换行符
         getchar();  // 等待用户按键
     }
+}
+
+/**
+ * 保存购物车到文件
+ */
+void save_cart_to_file() {
+    FILE *fp;
+    fp = fopen("shopping_cart.txt", "w");
+    if (fp == NULL) {
+        printf("无法打开购物车文件，保存失败！\n");
+        return;
+    }
+    
+    // 先保存购物车中商品的数量
+    fprintf(fp, "%d\n", cart_count);
+    
+    // 保存每个商品的详细信息
+    for (int i = 0; i < cart_count; i++) {
+        fprintf(fp, "%s %s %f %f %d %d\n",
+                shopping_cart[i].product.brand,
+                shopping_cart[i].product.id,
+                shopping_cart[i].product.in_price,
+                shopping_cart[i].product.out_price,
+                shopping_cart[i].product.storage,
+                shopping_cart[i].quantity);
+    }
+    
+    fclose(fp);
+    printf("购物车数据已保存！\n");
+}
+
+/**
+ * 从文件加载购物车
+ */
+void load_cart_from_file() {
+    FILE *fp;
+    fp = fopen("shopping_cart.txt", "r");
+    if (fp == NULL) {
+        // 文件不存在可能是第一次使用，购物车为空
+        cart_count = 0;
+        return;
+    }
+    
+    // 读取购物车中商品的数量
+    if (fscanf(fp, "%d\n", &cart_count) != 1) {
+        cart_count = 0;
+        fclose(fp);
+        return;
+    }
+    
+    // 读取每个商品的详细信息
+    for (int i = 0; i < cart_count && i < NUM; i++) {
+        if (fscanf(fp, "%s %s %f %f %d %d\n",
+                   shopping_cart[i].product.brand,
+                   shopping_cart[i].product.id,
+                   &shopping_cart[i].product.in_price,
+                   &shopping_cart[i].product.out_price,
+                   &shopping_cart[i].product.storage,
+                   &shopping_cart[i].quantity) != 6) {
+            // 如果读取失败，减少计数并退出
+            cart_count = i;
+            break;
+        }
+    }
+    
+    fclose(fp);
 }

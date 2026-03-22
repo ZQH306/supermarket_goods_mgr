@@ -86,8 +86,9 @@ int inventory()
         
         case 4: printf("4.结算\n");
         {
-            show_shopping_cart();
-            printf("结算功能待实现...\n");
+            // 声明外部函数
+            extern void checkout(void);
+            checkout();
         }break;
         
         case 5: printf("5.退出\n");

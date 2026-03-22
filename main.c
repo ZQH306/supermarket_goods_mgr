@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "menu.h"
 #include "inventory.h"
+#include "checkout.h"
 
 
 int main() {
